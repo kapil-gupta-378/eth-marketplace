@@ -1,0 +1,170 @@
+A Web3-native matchmaking platform where:
+ETH holders connect their wallet → they appear in a public marketplace table
+
+
+Liquidity seekers (protocols, LPs, founders) can post offers/bribes/incentives
+
+
+ETH holders optionally leave contact (email/notification) to get alerts
+
+
+Offers can be financial or creative (NFTs, IRL perks, custom rewards)
+
+
+
+✨ How to Build It Right
+✅ ETH Holder Side (Supply)
+Each row = 1 wallet. Columns:
+Wallet address (truncated, clickable)
+
+
+Assets in wallet: auto-filled from wallet:
+
+
+ETH, stETH, rETH, cbETH
+
+
+LRTs (ezETH, rsETH, etc.)
+
+
+Show estimated dollar value
+
+
+Custom tags/metadata (optional)
+
+
+Willing to lend / farm / stake / mint stablecoins
+
+
+Available capital range
+
+
+Opt-in for offers/alerts
+
+
+✅ Checkbox: “Allow email offers”
+
+
+Email field (stored securely, never shown)
+
+
+Offers Received Column:
+
+
+All offers targeting this wallet
+
+
+Each offer shows:
+
+
+From (wallet or anon tag)
+
+
+Offer content
+
+
+Expiry (optional)
+
+
+CTA (e.g., “Message”, “Accept”)
+
+
+Offers stacked accordion-style or tabbed by category (DeFi, NFT, IRL, etc.)
+
+
+
+🤝 Offer Maker Side (Demand)
+Let anyone post an offer to any ETH holder:
+Search bar to find wallets by:
+
+
+ETH balance
+
+
+LST/LRT types
+
+
+Willingness tags
+
+
+Region (if available via opt-in)
+
+
+Offer entry modal:
+
+
+Title: “I’ll pay you $150 to stake with me for 30 days”
+
+
+Type: [Cash | Tokens | IRL Reward | NFT | Other]
+
+
+Optional: link to docs, terms
+
+
+Optional: contact field (wallet, anon alias, email)
+
+
+Optional escrow plugin (later stage):
+
+
+Lock reward for automated release
+
+
+
+💬 Messaging (Optional)
+If both parties opt-in, enable Web3 messaging:
+
+
+XMTP / Lens Protocol / Notifi
+
+
+Or anonymized relay system (“Reply to Offer”)
+
+
+
+🎨 UX/UI Notes
+Clean “Notion meets Matcha” style table
+
+
+Filters:
+
+
+Only show ETH > $1k
+
+
+Only wallets that opted into offers
+
+
+Sort by “most recent activity” or “most ETH”
+
+
+Highlight “verified wallets” or “known yield farmers”
+
+
+Gamify → badges for top ETH holders, top dealmakers
+
+
+
+🔒 Privacy + Anti-spam
+No wallet shows unless user opts in
+
+
+Email never shown publicly
+
+
+Rate-limit offers per wallet (e.g., max 5/day)
+
+
+Optional allowlist for offer-makers (via small stake?)
+
+
+
+
+
+
+
+💡 Suggested Tagline
+“The Liquidity Marketplace for ETH Holders. Get paid to deploy your ETH.”
+ or
+ “Connect your wallet. Receive bribes, deals & yield offers directly.”
