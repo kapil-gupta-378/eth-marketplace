@@ -1,22 +1,37 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Filter } from "lucide-react";
 
-export default function FilterBar() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [minEth, setMinEth] = useState("");
-  const [assetType, setAssetType] = useState("");
-  const [sortBy, setSortBy] = useState("totalValueUsd");
+interface FilterBarProps {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  minEth: string;
+  setMinEth: (value: string) => void;
+  assetType: string;
+  setAssetType: (value: string) => void;
+  sortBy: string;
+  setSortBy: (value: string) => void;
+}
 
+export default function FilterBar({
+  searchTerm,
+  setSearchTerm,
+  minEth,
+  setMinEth,
+  assetType,
+  setAssetType,
+  sortBy,
+  setSortBy,
+}: FilterBarProps) {
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
@@ -44,7 +59,7 @@ export default function FilterBar() {
                 <SelectItem value="100">100+ ETH</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select value={assetType} onValueChange={setAssetType}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="Asset Type" />
@@ -57,7 +72,7 @@ export default function FilterBar() {
                 <SelectItem value="LRTs">LRTs</SelectItem>
               </SelectContent>
             </Select>
-            
+
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-32">
                 <SelectValue placeholder="Sort by" />
@@ -68,11 +83,6 @@ export default function FilterBar() {
                 <SelectItem value="offersCount">Most Offers</SelectItem>
               </SelectContent>
             </Select>
-            
-            <Button variant="outline">
-              <Filter className="h-4 w-4 mr-1" />
-              More Filters
-            </Button>
           </div>
         </div>
       </CardContent>

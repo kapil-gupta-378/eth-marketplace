@@ -40,7 +40,7 @@ export const offers = pgTable("offers", {
   offerType: text("offer_type").notNull(), // 'cash', 'tokens', 'nft', 'irl', 'other'
   category: text("category").notNull().default("defi"), // 'defi', 'nft', 'irl', 'other'
   rewardValue: decimal("reward_value", { precision: 18, scale: 2 }),
-  expiryDate: timestamp("expiry_date"),
+  expiryDate: text("expiry_date"),
   isActive: boolean("is_active").notNull().default(true),
   isAccepted: boolean("is_accepted").notNull().default(false),
   acceptedAt: timestamp("accepted_at"),

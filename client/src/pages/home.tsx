@@ -37,8 +37,12 @@ interface TopOffer {
 export default function Home() {
   const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
-    const { isConnected, address, connect, disconnect ,balance} = useWallet();
-  console.log(isConnected, address, balance, 'balance');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [minEth, setMinEth] = useState("");
+  const [assetType, setAssetType] = useState("");
+  const [sortBy, setSortBy] = useState("totalValueUsd");
+  const { isConnected, address, connect, disconnect, balance } = useWallet();
+  console.log(isConnected, address, balance, "balance");
 
   const { data: stats } = useQuery<MarketplaceStats>({
     queryKey: ["/api/stats"],
@@ -69,18 +73,12 @@ export default function Home() {
                 <h1 className="text-xl font-bold">ETH Liquidity Marketplace</h1>
               </div>
               <span className="text-sm text-muted-foreground hidden sm:block">
-                Connect your wallet. Receive bribes, deals & yield offers directly.
+                Connect your wallet. Receive bribes, deals & yield offers
+                directly.
               </span>
             </div>
             <div className="flex items-center space-x-4">
               <WalletConnection />
-              <Button 
-                onClick={() => setIsOfferModalOpen(true)}
-                className="bg-muted hover:bg-muted/80"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Post Offer
-              </Button>
             </div>
           </div>
         </div>
@@ -91,10 +89,25 @@ export default function Home() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filter Bar */}
-        <FilterBar />
+        <FilterBar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          minEth={minEth}
+          setMinEth={setMinEth}
+          assetType={assetType}
+          setAssetType={setAssetType}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+        />
 
         {/* Marketplace Table */}
-        <MarketplaceTable onSendOffer={handleSendOffer} />
+        <MarketplaceTable
+          onSendOffer={handleSendOffer}
+          searchTerm={searchTerm}
+          minEth={minEth}
+          assetType={assetType}
+          sortBy={sortBy}
+        />
 
         {/* Recent Activity & Top Offers */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -114,7 +127,9 @@ export default function Home() {
                     </div>
                   </div>
                 )) || (
-                  <div className="text-sm text-muted-foreground">No recent activity</div>
+                  <div className="text-sm text-muted-foreground">
+                    No recent activity
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -122,10 +137,15 @@ export default function Home() {
 
           <Card>
             <CardContent className="pt-6">
-              <h3 className="text-lg font-semibold mb-4">Top Offers This Week</h3>
+              <h3 className="text-lg font-semibold mb-4">
+                Top Offers This Week
+              </h3>
               <div className="space-y-4">
                 {topOffers?.slice(0, 3).map((offer) => (
-                  <div key={offer.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div
+                    key={offer.id}
+                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                  >
                     <div>
                       <div className="text-sm font-medium">{offer.title}</div>
                       <div className="text-xs text-muted-foreground">
@@ -138,7 +158,9 @@ export default function Home() {
                     </Badge>
                   </div>
                 )) || (
-                  <div className="text-sm text-muted-foreground">No top offers available</div>
+                  <div className="text-sm text-muted-foreground">
+                    No top offers available
+                  </div>
                 )}
               </div>
             </CardContent>
@@ -156,34 +178,83 @@ export default function Home() {
                 <span className="text-lg font-bold">ETH Liquidity</span>
               </div>
               <p className="text-muted-foreground text-sm">
-                The premier marketplace for ETH holders and liquidity seekers to connect and transact.
+                The premier marketplace for ETH holders and liquidity seekers to
+                connect and transact.
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-3">Platform</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">How it works</a></li>
-                <li><a href="#" className="hover:text-foreground">Security</a></li>
-                <li><a href="#" className="hover:text-foreground">Fees</a></li>
-                <li><a href="#" className="hover:text-foreground">API</a></li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    How it works
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Security
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Fees
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    API
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-3">Support</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">Help Center</a></li>
-                <li><a href="#" className="hover:text-foreground">Contact Us</a></li>
-                <li><a href="#" className="hover:text-foreground">Community</a></li>
-                <li><a href="#" className="hover:text-foreground">Status</a></li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Community
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Status
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-3">Legal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-foreground">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-foreground">Cookie Policy</a></li>
-                <li><a href="#" className="hover:text-foreground">Disclaimer</a></li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Cookie Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-foreground">
+                    Disclaimer
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

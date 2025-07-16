@@ -134,6 +134,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new offer
   app.post("/api/offers", async (req, res) => {
     try {
+      
       const offerData = insertOfferSchema.parse(req.body);
       const offer = await storage.createOffer(offerData);
       res.json(offer);

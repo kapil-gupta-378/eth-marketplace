@@ -91,12 +91,8 @@ export default function OfferModal({
       const offerData = {
         ...data,
         targetWalletId,
-        rewardValue: data.rewardValue
-          ? parseFloat(data.rewardValue)
-          : undefined,
-        expiryDate: data.expiryDate
-          ? new Date(data.expiryDate).toISOString()
-          : undefined,
+        rewardValue: data.rewardValue ? data.rewardValue : undefined,
+        expiryDate: data.expiryDate ? new Date(data.expiryDate) : undefined,
       };
 
       return apiRequest("POST", "/api/offers", offerData);

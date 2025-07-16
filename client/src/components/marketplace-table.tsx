@@ -4,23 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Clock, 
-  DollarSign, 
-  Mail, 
-  Send, 
-  User, 
-  Wallet 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  DollarSign,
+  Mail,
+  Send,
+  User,
+  Wallet,
 } from "lucide-react";
 import { Wallet as WalletType } from "@/types/wallet";
 
@@ -28,37 +28,36 @@ interface MarketplaceTableProps {
   onSendOffer: (walletAddress: string) => void;
 }
 
-interface WalletFilters {
-  search: string;
-  minEth: number;
+interface MarketplaceTableProps {
+  onSendOffer: (walletAddress: string) => void;
+  searchTerm: string;
+  minEth: string;
   assetType: string;
   sortBy: string;
-  sortOrder: string;
 }
 
-export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps) {
+export default function MarketplaceTable({
+  onSendOffer,
+  searchTerm,
+  minEth,
+  assetType,
+  sortBy,
+}: MarketplaceTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState<WalletFilters>({
-    search: "",
-    minEth: 0,
-    assetType: "",
-    sortBy: "totalValueUsd",
-    sortOrder: "desc"
-  });
 
   const { data: walletsData, isLoading } = useQuery({
-    queryKey: ["/api/wallets", currentPage, filters],
+    queryKey: ["/api/wallets", currentPage, searchTerm, minEth, assetType, sortBy],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: "10",
-        search: filters.search,
-        minEth: filters.minEth.toString(),
-        assetType: filters.assetType,
-        sortBy: filters.sortBy,
-        sortOrder: filters.sortOrder
+        search: searchTerm,
+        minEth: minEth ? parseFloat(minEth).toString() : "0",
+        assetType: assetType,
+        sortBy: sortBy,
+        sortOrder: "desc",
       });
-      
+
       const response = await fetch(`/api/wallets?${params}`);
       if (!response.ok) {
         throw new Error("Failed to fetch wallets");
@@ -89,7 +88,7 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
     const past = new Date(timestamp);
     const diff = now.getTime() - past.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
-    
+
     if (hours < 1) return "Active now";
     if (hours < 24) return `Active ${hours}h ago`;
     return `Active ${Math.floor(hours / 24)}d ago`;
@@ -149,12 +148,18 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
                               {truncateAddress(wallet.address)}
                             </code>
                             {wallet.isVerified && (
-                              <Badge variant="secondary" className="bg-accent text-white">
+                              <Badge
+                                variant="secondary"
+                                className="bg-accent text-white"
+                              >
                                 Verified
                               </Badge>
                             )}
                             {wallet.badges && wallet.badges.length > 0 && (
-                              <Badge variant="outline" className="bg-warning text-white">
+                              <Badge
+                                variant="outline"
+                                className="bg-warning text-white"
+                              >
                                 🏆 Top Holder
                               </Badge>
                             )}
@@ -173,7 +178,11 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
                             {formatEth(wallet.ethBalance)} ETH
                           </span>
                           <span className="text-xs text-muted-foreground">
-                            ({formatCurrency((parseFloat(wallet.ethBalance) * 1958).toString())})
+                            (
+                            {formatCurrency(
+                              (parseFloat(wallet.ethBalance) * 1958).toString()
+                            )}
+                            )
                           </span>
                         </div>
                         {parseFloat(wallet.stethBalance) > 0 && (
@@ -182,20 +191,33 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
                               {formatEth(wallet.stethBalance)} stETH
                             </span>
                             <span className="text-xs text-muted-foreground">
-                              ({formatCurrency((parseFloat(wallet.stethBalance) * 1958).toString())})
+                              (
+                              {formatCurrency(
+                                (
+                                  parseFloat(wallet.stethBalance) * 1958
+                                ).toString()
+                              )}
+                              )
                             </span>
                           </div>
                         )}
                         <div className="flex flex-wrap gap-1">
                           {parseFloat(wallet.rethBalance) > 0 && (
-                            <Badge variant="outline" className="text-xs">rETH</Badge>
+                            <Badge variant="outline" className="text-xs">
+                              rETH
+                            </Badge>
                           )}
                           {parseFloat(wallet.cbethBalance) > 0 && (
-                            <Badge variant="outline" className="text-xs">cbETH</Badge>
+                            <Badge variant="outline" className="text-xs">
+                              cbETH
+                            </Badge>
                           )}
-                          {wallet.lrtBalances && Object.keys(wallet.lrtBalances).length > 0 && (
-                            <Badge variant="outline" className="text-xs">LRTs</Badge>
-                          )}
+                          {wallet.lrtBalances &&
+                            Object.keys(wallet.lrtBalances).length > 0 && (
+                              <Badge variant="outline" className="text-xs">
+                                LRTs
+                              </Badge>
+                            )}
                         </div>
                         <div className="text-sm font-semibold text-accent">
                           Total: {formatCurrency(wallet.totalValueUsd)}
@@ -205,15 +227,23 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
                     <TableCell>
                       <div className="space-y-2">
                         <div className="flex flex-wrap gap-1">
-                          {wallet.preferences && wallet.preferences.activities?.map((activity: string) => (
-                            <Badge key={activity} variant="secondary" className="text-xs">
-                              {activity}
-                            </Badge>
-                          ))}
+                          {wallet.preferences &&
+                            wallet.preferences.activities?.map(
+                              (activity: string) => (
+                                <Badge
+                                  key={activity}
+                                  variant="secondary"
+                                  className="text-xs"
+                                >
+                                  {activity}
+                                </Badge>
+                              )
+                            )}
                         </div>
                         <div className="text-sm text-muted-foreground flex items-center">
                           <DollarSign className="h-3 w-3 mr-1" />
-                          {formatCurrency(wallet.availableCapitalMin)} - {formatCurrency(wallet.availableCapitalMax)} available
+                          {formatCurrency(wallet.availableCapitalMin)} -{" "}
+                          {formatCurrency(wallet.availableCapitalMax)} available
                         </div>
                         {wallet.emailAlertsEnabled && (
                           <div className="flex items-center space-x-2">
@@ -228,26 +258,37 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
                     <TableCell>
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                          <Badge variant="secondary" className="bg-primary text-white">
+                          <Badge
+                            variant="secondary"
+                            className="bg-primary text-white"
+                          >
                             {wallet.offersReceived?.length || 0}
                           </Badge>
-                          <span className="text-sm text-muted-foreground">Active Offers</span>
+                          <span className="text-sm text-muted-foreground">
+                            Active Offers
+                          </span>
                         </div>
                         <div className="space-y-1">
-                          {wallet.offersReceived?.slice(0, 3).map((offer: any) => (
-                            <div key={offer.id} className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-accent rounded-full" />
-                              <span className="text-xs text-muted-foreground">
-                                {offer.title}
-                              </span>
-                            </div>
-                          ))}
+                          {wallet.offersReceived
+                            ?.slice(0, 3)
+                            .map((offer: any) => (
+                              <div
+                                key={offer.id}
+                                className="flex items-center space-x-2"
+                              >
+                                <div className="w-2 h-2 bg-accent rounded-full" />
+                                <span className="text-xs text-muted-foreground">
+                                  {offer.title}
+                                </span>
+                              </div>
+                            ))}
                         </div>
-                        {wallet.offersReceived && wallet.offersReceived.length > 3 && (
-                          <button className="text-xs text-primary hover:underline">
-                            View all offers →
-                          </button>
-                        )}
+                        {wallet.offersReceived &&
+                          wallet.offersReceived.length > 3 && (
+                            <button className="text-xs text-primary hover:underline">
+                              View all offers →
+                            </button>
+                          )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -259,13 +300,6 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
                         >
                           <Send className="h-3 w-3 mr-1" />
                           Send Offer
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                        >
-                          <User className="h-3 w-3 mr-1" />
-                          View Profile
                         </Button>
                       </div>
                     </TableCell>
@@ -280,9 +314,13 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
       {/* Pagination */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          Showing <span className="font-medium">{(pagination.page - 1) * 10 + 1}</span> to{" "}
-          <span className="font-medium">{Math.min(pagination.page * 10, pagination.total)}</span> of{" "}
-          <span className="font-medium">{pagination.total}</span> results
+          Showing{" "}
+          <span className="font-medium">{(pagination.page - 1) * 10 + 1}</span>{" "}
+          to{" "}
+          <span className="font-medium">
+            {Math.min(pagination.page * 10, pagination.total)}
+          </span>{" "}
+          of <span className="font-medium">{pagination.total}</span> results
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -309,7 +347,9 @@ export default function MarketplaceTable({ onSendOffer }: MarketplaceTableProps)
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setCurrentPage(Math.min(pagination.pages, currentPage + 1))}
+            onClick={() =>
+              setCurrentPage(Math.min(pagination.pages, currentPage + 1))
+            }
             disabled={currentPage === pagination.pages}
           >
             <ChevronRight className="h-4 w-4" />
